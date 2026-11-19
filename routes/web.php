@@ -1,9 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ImagePostController;
+use App\Models\ImagePost;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,7 +30,22 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', function (Request $request) {
+        if (! $request->session()->has('image_upload_token')) {
+            $request->session()->put('image_upload_token', Str::random(64));
+        }
+
+        return view('dashboard', [
+            'uploadToken' => $request->session()->get('image_upload_token'),
+            'posts' => ImagePost::query()
+                ->where('user_id', $request->user()->id)
+                ->latest('id')
+                ->get(),
+        ]);
+    })->name('dashboard');
+
+    Route::post('/api/image-posts', [ImagePostController::class, 'store'])
+        ->name('image-posts.store');
 
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
@@ -42,4 +62,7 @@ Route::prefix('admin')
     ->middleware(['auth', 'can:access-admin'])
     ->group(function (): void {
         Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+
+        Route::get('/users', [AdminUserController::class, 'index'])
+            ->name('users.index');
     });
