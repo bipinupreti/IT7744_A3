@@ -4,15 +4,17 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ImageGalleryController;
 use App\Http\Controllers\ImagePostController;
 use App\Models\ImagePost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'gallery')->name('gallery');
+
+Route::get('/api/image-posts/latest', [ImageGalleryController::class, 'latest'])
+    ->name('image-posts.latest');
 
 Route::get('/register', [RegisterController::class, 'create'])
     ->name('register');
@@ -44,8 +46,20 @@ Route::middleware('auth')->group(function () {
         ]);
     })->name('dashboard');
 
+    Route::get('/api/image-posts/mine', [ImageGalleryController::class, 'mine'])
+        ->name('image-posts.mine');
+
+    Route::get('/api/image-posts/others', [ImageGalleryController::class, 'others'])
+        ->name('image-posts.others');
+
     Route::post('/api/image-posts', [ImagePostController::class, 'store'])
         ->name('image-posts.store');
+
+    Route::patch('/image-posts/{imagePost}', [ImagePostController::class, 'update'])
+        ->name('image-posts.update');
+
+    Route::delete('/image-posts/{imagePost}', [ImagePostController::class, 'destroy'])
+        ->name('image-posts.destroy');
 
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
