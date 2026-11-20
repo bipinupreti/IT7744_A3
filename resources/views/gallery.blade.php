@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Image Gallery</title>
-</head>
-<body>
+@extends('layouts.app')
+
+@section('title', 'Image Gallery')
+@section('body-class', 'page-gallery')
+
+@section('content')
     <header>
         <nav aria-label="Main navigation">
             @auth
@@ -38,7 +36,8 @@
             <div id="gallery-results"></div>
         </section>
     </main>
+@endsection
 
+@push('scripts')
     <script src="{{ asset('js/image_gallery.js') }}" defer></script>
-</body>
-</html>
+@endpush

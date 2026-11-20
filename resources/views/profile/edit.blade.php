@@ -5,18 +5,23 @@
 
 @section('content')
     <main>
-        <h1>Edit profile</h1>
-        <p><a href="{{ route('dashboard') }}">Back to dashboard</a></p>
+        <header class="edit-profile-header">
+            <div>
+                <h1>Edit profile</h1>
+                <a href="{{ route('dashboard') }}">Back to dashboard</a>
+            </div>
+
+            @if ($user->profile_photo_path)
+                <img class="edit-profile-header__photo"
+                     src="{{ asset('storage/' . $user->profile_photo_path) }}"
+                     alt="Current profile picture"
+                     width="96"
+                     height="96">
+            @endif
+        </header>
 
         @if (session('success'))
             <p role="status">{{ session('success') }}</p>
-        @endif
-
-        @if ($user->profile_photo_path)
-            <p>
-                <img src="{{ asset('storage/' . $user->profile_photo_path) }}"
-                     alt="Current profile picture" width="120">
-            </p>
         @endif
 
         <form method="POST" action="{{ route('profile.update') }}"
@@ -66,7 +71,9 @@
                 <input id="profile-photo" name="profile_photo" type="file"
                        accept="image/jpeg,image/png,image/webp"
                        aria-describedby="profile-photo-help">
-                <small id="profile-photo-help">JPG, PNG, or WebP, up to 2 MB. Leave blank to keep your current picture.</small>
+                <small id="profile-photo-help">
+                    JPG, PNG, or WebP, up to 2 MB. Leave blank to keep your current picture.
+                </small>
                 @error('profile_photo')
                     <span role="alert">{{ $message }}</span>
                 @enderror

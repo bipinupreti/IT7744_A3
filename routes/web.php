@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ProfileController;
@@ -77,6 +78,6 @@ Route::prefix('admin')
     ->group(function (): void {
         Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
 
-        Route::get('/users', [AdminUserController::class, 'index'])
-            ->name('users.index');
+        Route::resource('users', AdminUserController::class)->except(['show']);
+        Route::resource('posts', AdminPostController::class)->except(['show']);
     });
