@@ -1,6 +1,0 @@
-app/Http/Controllers/Auth/LoginController.php
-app/Providers/AppServiceProvider.php
-database/migrations/2026_11_18_093911_add_role_to_users_table.php
-resources/views/admin/dashboard.blade.php
-resources/views/dashboard.blade.php
-routes/web.php
