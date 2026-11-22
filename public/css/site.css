@@ -107,6 +107,16 @@ button:disabled {
   cursor: wait;
 }
 
+form:has(input[name=_method][value=DELETE]) button {
+  border-color: #a12635;
+  background: #fff;
+  color: #a12635;
+}
+form:has(input[name=_method][value=DELETE]) button:hover {
+  background: #a12635;
+  color: #fff;
+}
+
 [role=status]:not(:empty) {
   padding: 0.65rem 0.85rem;
   border-radius: 0.45rem;
@@ -121,97 +131,15 @@ button:disabled {
   font-weight: 600;
 }
 
-.site-panel, .dashboard-header, .page-dashboard main > section,
-.page-gallery main > section, .page-form main {
+.site-panel,
+.page-form main,
+.page-dashboard main > section,
+.page-gallery main > section,
+.dashboard-header {
   padding: clamp(1rem, 3vw, 2rem);
   border: 1px solid #d0dbe6;
   border-radius: 0.85rem;
   background: #fff;
-}
-
-.page-form main {
-  max-width: 36rem;
-}
-
-.page-dashboard main > section,
-.page-gallery main > section {
-  margin-top: 1.5rem;
-}
-
-.dashboard-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-}
-.dashboard-header h1 {
-  font-size: clamp(1.65rem, 3vw, 2.25rem);
-}
-.dashboard-header__main {
-  min-width: 0;
-}
-.dashboard-header__identity {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  min-width: 0;
-  max-width: 100%;
-  margin-inline-start: auto;
-  text-align: center;
-}
-.dashboard-header__identity p {
-  margin: 0;
-  font-size: 1.05rem;
-}
-.dashboard-header__identity p span {
-  text-transform: capitalize;
-}
-.dashboard-header__avatar {
-  display: grid;
-  flex: none;
-  width: 96px;
-  height: 96px;
-  place-items: center;
-  overflow: hidden;
-  border: 2px solid #155e54;
-  border-radius: 50%;
-  background: #e5f3ef;
-  color: #104840;
-  font-size: 2rem;
-  font-weight: 700;
-}
-.dashboard-header__avatar img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.dashboard-header__actions {
-  gap: 0.5rem 1rem;
-}
-.dashboard-header__actions form {
-  margin: 0;
-}
-.dashboard-header__actions button {
-  border-color: #8c9fb3;
-  background: #fff;
-  color: #14263d;
-}
-.dashboard-header__actions button:hover {
-  background: #f2f6fa;
-}
-
-.page-gallery nav button {
-  border-color: #8c9fb3;
-  background: #fff;
-  color: #104840;
-}
-.page-gallery nav button[aria-pressed=true], .page-gallery nav button:hover {
-  border-color: #155e54;
-  background: #155e54;
-  color: #fff;
 }
 
 #gallery-results,
@@ -245,8 +173,8 @@ button:disabled {
   border: 1px solid #d0dbe6;
   border-radius: 0.45rem;
 }
-#gallery-results details summary,
-#my-images details summary {
+#gallery-results summary,
+#my-images summary {
   color: #155e54;
   font-weight: 650;
   cursor: pointer;
@@ -254,6 +182,111 @@ button:disabled {
 #gallery-results details form,
 #my-images details form {
   margin-top: 0.75rem;
+}
+
+.dashboard-header__avatar,
+.edit-profile-header__photo {
+  flex: none;
+  width: 96px;
+  height: 96px;
+  border: 2px solid #155e54;
+  border-radius: 50%;
+}
+
+.page-dashboard main > section,
+.page-gallery main > section {
+  margin-top: 1.5rem;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+.dashboard-header h1 {
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+}
+.dashboard-header__main {
+  min-width: 0;
+}
+.dashboard-header__identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  max-width: 100%;
+  margin-inline-start: auto;
+  text-align: center;
+}
+.dashboard-header__identity p {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.dashboard-header__identity span {
+  text-transform: capitalize;
+}
+.dashboard-header__avatar {
+  order: -1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #e5f3ef;
+  color: #104840;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.dashboard-header__avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.dashboard-header__actions {
+  gap: 0.5rem 1rem;
+}
+.dashboard-header__actions form {
+  margin: 0;
+}
+
+.dashboard-header__actions button {
+  border-color: #8c9fb3;
+  background: #fff;
+  color: #14263d;
+}
+.dashboard-header__actions button:hover {
+  background: #f2f6fa;
+}
+
+.page-gallery nav button {
+  border-color: #8c9fb3;
+  background: #fff;
+  color: #104840;
+}
+.page-gallery nav button[aria-pressed=true], .page-gallery nav button:hover {
+  border-color: #155e54;
+  background: #155e54;
+  color: #fff;
+}
+
+.page-form main {
+  max-width: 36rem;
+}
+
+.edit-profile-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.edit-profile-header__photo {
+  display: block;
+  margin-inline-start: auto;
+  object-fit: cover;
 }
 
 .page-admin-home nav ul {
@@ -265,14 +298,15 @@ button:disabled {
   padding: 0;
   list-style: none;
 }
-.page-admin-home nav ul a {
+
+.page-admin-home nav a {
   display: block;
   padding: 1rem;
   border: 1px solid #d0dbe6;
   border-radius: 0.65rem;
   background: #fff;
 }
-.page-admin-home nav ul a:hover {
+.page-admin-home nav a:hover {
   background: #e5f3ef;
 }
 
@@ -303,16 +337,6 @@ button:disabled {
   margin-top: 0.45rem;
 }
 
-form:has(input[name=_method][value=DELETE]) button {
-  border-color: #a12635;
-  background: #fff;
-  color: #a12635;
-}
-form:has(input[name=_method][value=DELETE]) button:hover {
-  background: #a12635;
-  color: #fff;
-}
-
 @media (max-width: 40rem) {
   .dashboard-header__actions {
     width: 100%;
@@ -324,54 +348,4 @@ form:has(input[name=_method][value=DELETE]) button:hover {
   .page-gallery main > nav button {
     flex: 1 1 auto;
   }
-}
-.dashboard-header .dashboard-header__identity {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  margin-inline-start: auto;
-  text-align: center;
-}
-.dashboard-header .dashboard-header__identity p {
-  margin: 0;
-  font-weight: 700;
-}
-.dashboard-header .dashboard-header__identity p span {
-  text-transform: capitalize;
-}
-
-.dashboard-header .dashboard-header__avatar {
-  order: -1;
-  display: grid;
-  flex: none;
-  width: 96px;
-  height: 96px;
-  place-items: center;
-  overflow: hidden;
-  border-radius: 50%;
-}
-.dashboard-header .dashboard-header__avatar img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.edit-profile-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-.edit-profile-header__photo {
-  display: block;
-  flex: none;
-  width: 96px;
-  height: 96px;
-  margin-inline-start: auto;
-  border: 2px solid #155e54;
-  border-radius: 50%;
-  object-fit: cover;
 }

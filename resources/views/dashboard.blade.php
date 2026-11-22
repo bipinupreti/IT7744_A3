@@ -152,7 +152,7 @@
 
                         <form method="POST"
                               action="{{ route('image-posts.destroy', $post) }}"
-                              onsubmit="return window.confirm('Delete this image post?')">
+                              data-async-delete>
                             @csrf
                             @method('DELETE')
 

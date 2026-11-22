@@ -7,7 +7,9 @@ $accent: #155e54;
 $accent-dark: #104840;
 $accent-light: #e5f3ef;
 $danger: #a12635;
+$profile-photo-size: 96px;
 
+// Base layout and typography
 * {
     box-sizing: border-box;
 }
@@ -72,6 +74,7 @@ a {
     outline-offset: 3px;
 }
 
+// Forms and feedback
 form {
     max-width: 36rem;
 
@@ -124,6 +127,17 @@ button {
     }
 }
 
+form:has(input[name="_method"][value="DELETE"]) button {
+    border-color: $danger;
+    background: $surface;
+    color: $danger;
+
+    &:hover {
+        background: $danger;
+        color: $surface;
+    }
+}
+
 [role="status"]:not(:empty) {
     padding: 0.65rem 0.85rem;
     border-radius: 0.45rem;
@@ -138,115 +152,16 @@ button {
     font-weight: 600;
 }
 
-.site-panel {
+// Shared panels and image cards
+.site-panel,
+.page-form main,
+.page-dashboard main > section,
+.page-gallery main > section,
+.dashboard-header {
     padding: clamp(1rem, 3vw, 2rem);
     border: 1px solid $border;
     border-radius: 0.85rem;
     background: $surface;
-}
-
-.page-form main {
-    @extend .site-panel;
-    max-width: 36rem;
-}
-
-.page-dashboard main > section,
-.page-gallery main > section {
-    @extend .site-panel;
-    margin-top: 1.5rem;
-}
-
-.dashboard-header {
-    @extend .site-panel;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem 2rem;
-
-    h1 {
-        font-size: clamp(1.65rem, 3vw, 2.25rem);
-    }
-
-    &__main {
-        min-width: 0;
-    }
-
-   &__identity {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-    min-width: 0;
-    max-width: 100%;
-    margin-inline-start: auto;
-    text-align: center;
-
-    p {
-        margin: 0;
-        font-size: 1.05rem;
-
-        span {
-            text-transform: capitalize;
-        }
-    }
-}
-
-&__avatar {
-    display: grid;
-    flex: none;
-    width: 96px;
-    height: 96px;
-    place-items: center;
-    overflow: hidden;
-    border: 2px solid $accent;
-    border-radius: 50%;
-    background: $accent-light;
-    color: $accent-dark;
-    font-size: 2rem;
-    font-weight: 700;
-
-    img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-}
-
-    &__actions {
-        gap: 0.5rem 1rem;
-
-        form {
-            margin: 0;
-        }
-
-        button {
-            border-color: $input-border;
-            background: $surface;
-            color: $ink;
-
-            &:hover {
-                background: $background;
-            }
-        }
-    }
-}
-
-.page-gallery {
-    nav button {
-        border-color: $input-border;
-        background: $surface;
-        color: $accent-dark;
-
-        &[aria-pressed="true"],
-        &:hover {
-            border-color: $accent;
-            background: $accent;
-            color: $surface;
-        }
-    }
 }
 
 #gallery-results,
@@ -278,19 +193,141 @@ button {
         padding: 0.75rem;
         border: 1px solid $border;
         border-radius: 0.45rem;
+    }
 
-        summary {
-            color: $accent;
-            font-weight: 650;
-            cursor: pointer;
+    summary {
+        color: $accent;
+        font-weight: 650;
+        cursor: pointer;
+    }
+
+    details form {
+        margin-top: 0.75rem;
+    }
+}
+
+// Shared profile photo dimensions
+.dashboard-header__avatar,
+.edit-profile-header__photo {
+    flex: none;
+    width: $profile-photo-size;
+    height: $profile-photo-size;
+    border: 2px solid $accent;
+    border-radius: 50%;
+}
+
+// Dashboard and gallery
+.page-dashboard main > section,
+.page-gallery main > section {
+    margin-top: 1.5rem;
+}
+
+.dashboard-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+
+    h1 {
+        font-size: clamp(1.65rem, 3vw, 2.25rem);
+    }
+
+    &__main {
+        min-width: 0;
+    }
+
+    &__identity {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        min-width: 0;
+        max-width: 100%;
+        margin-inline-start: auto;
+        text-align: center;
+
+        p {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
         }
 
+        span {
+            text-transform: capitalize;
+        }
+    }
+
+    &__avatar {
+        order: -1;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: $accent-light;
+        color: $accent-dark;
+        font-size: 2rem;
+        font-weight: 700;
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__actions {
+        gap: 0.5rem 1rem;
+
         form {
-            margin-top: 0.75rem;
+            margin: 0;
         }
     }
 }
 
+.dashboard-header__actions button {
+    border-color: $input-border;
+    background: $surface;
+    color: $ink;
+
+    &:hover {
+        background: $background;
+    }
+}
+
+.page-gallery nav button {
+    border-color: $input-border;
+    background: $surface;
+    color: $accent-dark;
+
+    &[aria-pressed="true"],
+    &:hover {
+        border-color: $accent;
+        background: $accent;
+        color: $surface;
+    }
+}
+
+// Profile and other form pages
+.page-form main {
+    max-width: 36rem;
+}
+
+.edit-profile-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    &__photo {
+        display: block;
+        margin-inline-start: auto;
+        object-fit: cover;
+    }
+}
+
+// Admin navigation and tables
 .page-admin-home nav ul {
     display: grid;
     width: 100%;
@@ -299,17 +336,17 @@ button {
     margin: 1rem 0;
     padding: 0;
     list-style: none;
+}
 
-    a {
-        display: block;
-        padding: 1rem;
-        border: 1px solid $border;
-        border-radius: 0.65rem;
-        background: $surface;
+.page-admin-home nav a {
+    display: block;
+    padding: 1rem;
+    border: 1px solid $border;
+    border-radius: 0.65rem;
+    background: $surface;
 
-        &:hover {
-            background: $accent-light;
-        }
+    &:hover {
+        background: $accent-light;
     }
 }
 
@@ -346,17 +383,6 @@ button {
     }
 }
 
-form:has(input[name="_method"][value="DELETE"]) button {
-    border-color: $danger;
-    background: $surface;
-    color: $danger;
-
-    &:hover {
-        background: $danger;
-        color: $surface;
-    }
-}
-
 @media (max-width: 40rem) {
     .dashboard-header__actions {
         width: 100%;
@@ -369,60 +395,5 @@ form:has(input[name="_method"][value="DELETE"]) button {
 
     .page-gallery main > nav button {
         flex: 1 1 auto;
-    }
-}
-
-.dashboard-header .dashboard-header__identity {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-    margin-inline-start: auto;
-    text-align: center;
-
-    p {
-        margin: 0;
-        font-weight: 700;
-
-        span {
-            text-transform: capitalize;
-        }
-    }
-}
-
-.dashboard-header .dashboard-header__avatar {
-    order: -1;
-    display: grid;
-    flex: none;
-    width: 96px;
-    height: 96px;
-    place-items: center;
-    overflow: hidden;
-    border-radius: 50%;
-
-    img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-}
-
-.edit-profile-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-
-    &__photo {
-        display: block;
-        flex: none;
-        width: 96px;
-        height: 96px;
-        margin-inline-start: auto;
-        border: 2px solid $accent;
-        border-radius: 50%;
-        object-fit: cover;
     }
 }

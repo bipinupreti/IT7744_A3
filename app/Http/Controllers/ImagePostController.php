@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ImagePost;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,14 +26,29 @@ class ImagePostController extends Controller
 
         $validated = $request->validate([
             ...$this->postRules(),
+            'upload_request_id' => ['required', 'uuid'],
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
+
+        $uploadRequestId = $validated['upload_request_id'];
+        $userId = $request->user()->id;
+
+        $matchingUpload = ImagePost::query()
+            ->where('user_id', $userId)
+            ->where('upload_request_id', $uploadRequestId);
+
+        $existingPost = $matchingUpload->first();
+
+        if ($existingPost !== null) {
+            return $this->uploadResponse($existingPost, 200);
+        }
 
         $path = $request->file('image')->store('image-posts', 'public');
         abort_if($path === false, 500, 'The image could not be saved.');
 
         $post = new ImagePost();
-        $post->user_id = $request->user()->id;
+        $post->user_id = $userId;
+        $post->upload_request_id = $uploadRequestId;
         $post->title = $validated['title'];
         $post->description = $validated['description'];
         $post->filter = $validated['filter'];
@@ -42,16 +58,19 @@ class ImagePostController extends Controller
             $post->save();
         } catch (Throwable $exception) {
             Storage::disk('public')->delete($path);
+
+            if ($exception instanceof UniqueConstraintViolationException) {
+                $existingPost = $matchingUpload->first();
+
+                if ($existingPost !== null) {
+                    return $this->uploadResponse($existingPost, 200);
+                }
+            }
+
             throw $exception;
         }
 
-        return response()->json([
-            'id' => $post->id,
-            'title' => $post->title,
-            'description' => $post->description,
-            'filter' => $post->filter,
-            'image_url' => asset('storage/' . $post->image_path),
-        ], 201);
+        return $this->uploadResponse($post, 201);
     }
 
     public function update(Request $request, ImagePost $imagePost): RedirectResponse
@@ -69,12 +88,16 @@ class ImagePostController extends Controller
             ->with('image_status', 'Image updated.');
     }
 
-    public function destroy(Request $request, ImagePost $imagePost): RedirectResponse
-    {
+    public function destroy(
+        Request $request,
+        ImagePost $imagePost
+    ): JsonResponse|RedirectResponse {
         $this->ensureOwner($request, $imagePost);
 
         $path = $imagePost->image_path;
         $imagePost->delete();
+
+        $message = 'Image deleted.';
 
         try {
             if (! Storage::disk('public')->delete($path)) {
@@ -84,13 +107,27 @@ class ImagePostController extends Controller
             }
         } catch (Throwable $exception) {
             report($exception);
+            $message = 'Post deleted, but its image file could not be removed.';
+        }
 
-            return redirect()->route('dashboard')
-                ->with('image_status', 'Post deleted, but its image file could not be removed.');
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $message]);
         }
 
         return redirect()->route('dashboard')
-            ->with('image_status', 'Image deleted.');
+            ->with('image_status', $message);
+    }
+
+    private function uploadResponse(ImagePost $post, int $status): JsonResponse
+    {
+        return response()->json([
+            'id' => $post->id,
+            'title' => $post->title,
+            'description' => $post->description,
+            'filter' => $post->filter,
+            'image_url' => asset('storage/' . $post->image_path),
+            'delete_url' => route('image-posts.destroy', $post),
+        ], $status);
     }
 
     private function ensureOwner(Request $request, ImagePost $imagePost): void
