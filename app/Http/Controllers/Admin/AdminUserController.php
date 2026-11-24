@@ -35,6 +35,7 @@ class AdminUserController extends Controller
 
         $user = new User();
         $user->name = $validated['name'];
+        $user->username = $validated['username'];
         $user->email = $validated['email'];
         $user->password = Hash::make($validated['password']);
         $user->role = 'user';
@@ -54,6 +55,7 @@ class AdminUserController extends Controller
         $validated = $request->validate($this->accountRules($user));
 
         $user->name = $validated['name'];
+        $user->username = $validated['username'];
         $user->email = $validated['email'];
 
         if ($user->isDirty('email')) {
@@ -73,7 +75,7 @@ class AdminUserController extends Controller
         try {
             $user->delete();
         } catch (QueryException $exception) {
-            // MySQL rejects deletion when an image post still references this user.
+            // MySQL rejects deletion when an image post still references the user.
             if ((int) ($exception->errorInfo[1] ?? 0) !== 1451) {
                 throw $exception;
             }
@@ -88,14 +90,24 @@ class AdminUserController extends Controller
 
     private function accountRules(?User $user = null): array
     {
+        $uniqueUsername = Rule::unique('users', 'username');
         $uniqueEmail = Rule::unique('users', 'email');
 
         if ($user !== null) {
+            $uniqueUsername->ignore($user);
             $uniqueEmail->ignore($user);
         }
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'username' => [
+                'required',
+                'string',
+                'min:3',
+                'max:32',
+                'regex:/\A[a-z0-9_-]+\z/',
+                $uniqueUsername,
+            ],
             'email' => ['required', 'string', 'email', 'max:255', $uniqueEmail],
         ];
     }

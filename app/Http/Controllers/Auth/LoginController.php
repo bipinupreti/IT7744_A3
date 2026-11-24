@@ -18,14 +18,16 @@ class LoginController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
+            'username' => ['required', 'string', 'max:32'],
             'password' => ['required', 'string'],
         ]);
 
+        $credentials['username'] = strtolower($credentials['username']);
+
         if (! Auth::attempt($credentials)) {
             return back()
-                ->withErrors(['email' => 'The email or password is incorrect.'])
-                ->onlyInput('email');
+                ->withErrors(['username' => 'The username or password is incorrect.'])
+                ->onlyInput('username');
         }
 
         $request->session()->regenerate();

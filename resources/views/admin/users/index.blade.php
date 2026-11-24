@@ -1,14 +1,12 @@
 @extends('layouts.app')
 
-@section('title')
-    Manage Users
-@endsection
-
+@section('title', 'Manage Users')
 @section('body-class', 'page-admin-list')
 
 @section('content')
     <main>
         <h1>Manage Users</h1>
+
         <p><a href="{{ route('admin.dashboard') }}">Back to admin dashboard</a></p>
         <p><a href="{{ route('admin.users.create') }}">Create User</a></p>
 
@@ -20,6 +18,7 @@
             <thead>
                 <tr>
                     <th scope="col">Name</th>
+                    <th scope="col">Username</th>
                     <th scope="col">Email</th>
                     <th scope="col">Role</th>
                     <th scope="col">Actions</th>
@@ -29,6 +28,7 @@
                 @forelse ($users as $user)
                     <tr>
                         <td>{{ $user->name }}</td>
+                        <td>{{ $user->username }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->role }}</td>
                         <td>
@@ -40,13 +40,16 @@
                                       onsubmit="return window.confirm('Delete this user account?')">
                                     @csrf
                                     @method('DELETE')
+
                                     <button type="submit">Delete</button>
                                 </form>
                             @endif
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="4">No users found.</td></tr>
+                    <tr>
+                        <td colspan="5">No users found.</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>

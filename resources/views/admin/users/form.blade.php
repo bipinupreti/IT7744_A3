@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
-@section('title')
-    {{ $user->exists ? 'Edit User' : 'Create User' }}
-@endsection
-
+@section('title', $user->exists ? 'Edit User' : 'Create User')
 @section('body-class', 'page-form')
 
 @section('content')
@@ -25,6 +22,17 @@
                 <input id="name" name="name" value="{{ old('name', $user->name) }}"
                        required maxlength="255">
                 @error('name')
+                    <span role="alert">{{ $message }}</span>
+                @enderror
+            </p>
+
+            <p>
+                <label for="username">Username</label>
+                <input id="username" name="username" value="{{ old('username', $user->username) }}"
+                       autocomplete="off" minlength="3" maxlength="32"
+                       pattern="[a-z0-9_\-]+" aria-describedby="username-help" required>
+                <small id="username-help">Use 3–32 lowercase letters, numbers, underscores or hyphens.</small>
+                @error('username')
                     <span role="alert">{{ $message }}</span>
                 @enderror
             </p>

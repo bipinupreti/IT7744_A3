@@ -1,4 +1,4 @@
-const { randomUUID } = require('node:crypto');
+﻿const { randomUUID } = require('node:crypto');
 const { test, expect } = require('@playwright/test');
 
 const baseUrl = 'http://127.0.0.1:8000';
@@ -8,11 +8,11 @@ const png = Buffer.from(
 );
 
 test('a user can publish and delete an image without reloading', async ({ page }) => {
-    const email = process.env.E2E_EMAIL;
+    const username = process.env.E2E_USERNAME;
     const password = process.env.E2E_PASSWORD;
 
-    if (!email || !password) {
-        throw new Error('Set E2E_EMAIL and E2E_PASSWORD before running this test.');
+    if (!username || !password) {
+        throw new Error('Set E2E_USERNAME and E2E_PASSWORD before running this test.');
     }
 
     await page.goto(`${baseUrl}/login`);
@@ -20,7 +20,7 @@ test('a user can publish and delete an image without reloading', async ({ page }
         has: page.locator('input[name="password"]'),
     });
 
-    await loginForm.locator('input[name="email"]').fill(email);
+    await loginForm.locator('input[name="username"]').fill(username);
     await loginForm.locator('input[name="password"]').fill(password);
     await loginForm.locator('button[type="submit"]').click();
     await expect(page).toHaveURL(/\/dashboard\/?$/);
@@ -70,4 +70,12 @@ test('a user can publish and delete an image without reloading', async ({ page }
     await page.reload();
     await expect(page.locator('#my-images')).toBeVisible();
     await expect(card).toHaveCount(0);
+});
+
+test('the login page welcomes users and links to registration', async ({ page }) => {
+    await page.goto(`${baseUrl}/login`);
+    await expect(page.getByRole('heading', { name: 'Welcome to Image Gallery' })).toBeVisible();
+    await expect(page.getByText(/Don[’']t have an account yet\?/)).toBeVisible();
+    await page.getByRole('link', { name: 'Create an account', exact: true }).click();
+    await expect(page).toHaveURL(/\/register\/?$/);
 });
